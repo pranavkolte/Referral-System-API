@@ -7,7 +7,6 @@ Referal code : generated unique refral code utilzing secrets lib.
 1. User Registration Endpoint:
 server response
 ![alt text](image.png)
-![alt text](image-1.png)
 refral id incrementing
 ![alt text](image-4.png)
 
