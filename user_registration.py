@@ -43,6 +43,9 @@ def signup(name : str, email : str, password : str, referral_code : str):
     
     db = SessionLocal()
     try:
+        user = db.query(User).filter(User.email == email).first()
+        if user:
+            raise HTTPException(status_code=422, detail="Email is already registered with us.")
         # Create a new user 
         new_user = User(
             id = set_uid(),
@@ -53,20 +56,18 @@ def signup(name : str, email : str, password : str, referral_code : str):
             referral_id=secrets.token_urlsafe(6), #generating referal ID for new user
         )
 
-        check_details(name, email, password)
-            
+        # check_details(name, email, password)
         db.add(new_user)
         db.commit()
 
+        # Award referral points if a valid referral code is provided
         if referral_code:
             referrer = db.query(User).filter_by(referral_code=referral_code).first()
             if referrer:
-                referrer.referral_points += 100  
+                referrer.referral_points += 100  # Adjust points as needed
                 db.commit()
-                   
-        tests.tests_responses.save_UID(new_user.id) # for test purpose
-        return {"UID": new_user.id, "response": "Success"}
-    
+
+        return {"user_id": new_user.id, "message": "User registered successfully"}
     except Exception as e:
         db.rollback()
         return {"error": str(e)}
