@@ -24,4 +24,5 @@ def get_user(email: str):
         "id": user.id,
         "name": user.name,
         "referral_id" : user.referral_id,
+        "time" : user.time,
     }

@@ -4,6 +4,7 @@ from fastapi import FastAPI, Form
 
 import user_registration
 import user_details
+import refers
 app = FastAPI()
 
 @app.post("/register/", response_model=dict)
@@ -18,6 +19,10 @@ async def register_user(
 @app.get("/user/{email}")
 def get_user(email: str):
     return user_details.get_user(email=email)
+
+@app.get("/get_refer/{email}")
+def get_user(email: str):
+    return refers.get_refer_info(email=email)
 
 if __name__ == "__main__":
     import uvicorn

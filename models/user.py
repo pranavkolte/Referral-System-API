@@ -1,5 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column,String, Integer
+from sqlalchemy import Column,String, Integer, TIMESTAMP
+import datetime
 
 Base = declarative_base()
 
@@ -12,3 +13,4 @@ class User(Base):
     referral_code = Column(String, nullable=True)
     referral_points = Column(Integer, default=0)
     referral_id = Column(String, unique=True, index=True)
+    time = Column(TIMESTAMP, default = datetime.datetime.now())
