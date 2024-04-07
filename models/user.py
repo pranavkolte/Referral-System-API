@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column,String
+from sqlalchemy import Column,String, Integer
 
 Base = declarative_base()
 
@@ -9,5 +9,6 @@ class User(Base):
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-    referral = Column(String)
-    
+    referral_code = Column(String, nullable=True)
+    referral_points = Column(Integer, default=0)
+    referral_id = Column(String, unique=True, index=True)
