@@ -1,5 +1,5 @@
-from sqlalchemy.orm import _orm
-from sqlalchemy import _sql
+import sqlalchemy.orm as _orm
+import sqlalchemy as _sql
 import fastapi as _fastapi
 import passlib.context as _passlib
 
