@@ -26,21 +26,19 @@ def get_pass_hash(password):
 
 @app.get("/")
 def home(token : str = _fastapi.Depends(oauth2_scheme)):
-    if check_valid_token(token=token):
-        return  {"response": "authorised"}
-    else:
-        return {"response":"unauthorised"}
+    return check_valid_token(token=token)
 
 
 def check_valid_token(token):
     try:
         payload = _jwt.decode(token, config.SECRET_KEY, algorithms=config.ALGORITHM)
         expiration_time = _datetime.datetime.utcfromtimestamp(payload["exp"])
-        return expiration_time > _datetime.datetime.utcnow()
+        if expiration_time > _datetime.datetime.utcnow() :
+            return {'status' : 'authorised'}
     except _jwt.ExpiredSignatureError:
-        return False
+        return  {'status' : 'EXPIRED_TOKEN'}
     except _jwt.InvalidTokenError:
-        return False
+        return {'status' : 'INVALID_TOKEN'}
 
 
 def user_auth(email: str, password : str): 
@@ -56,7 +54,6 @@ def create_access_token(data : dict, expires_delta : _datetime.timedelta):
     to_encode = data.copy()
     expire = _datetime.datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
-    print(to_encode)
     encoded_JWT = _jwt.encode(to_encode, config.SECRET_KEY , config.ALGORITHM)
     return encoded_JWT
 
@@ -70,7 +67,6 @@ def login(form_data : _security.OAuth2PasswordRequestForm = _fastapi.Depends()):
         access_token = create_access_token(
             data = {"sub":email}, expires_delta = _datetime.timedelta(minutes=15)
         )
-        print(access_token)
         return {"access_token" : access_token, "token_type": "bearer"}
     else:
         raise _fastapi.HTTPException(status_code=400, detail="Incorrect email or password")
@@ -86,14 +82,14 @@ async def register_user(
 ):
     return user_registration.signup(name = name, email= email, password= password, referral_code=referral_code )
 
-@app.get("/user/{email}")
+@app.get("/user/{email}",)
 async def get_user_details(email: str):
     return user_details.get_user_details(email=email)
 
 @app.get("/get_refer/{email}")
 async def get_refers(email: str):
     return refers.get_refer_info(email=email)
-
+    
 
 if __name__ == "__main__":
     import uvicorn
