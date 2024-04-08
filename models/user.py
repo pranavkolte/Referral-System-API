@@ -1,6 +1,6 @@
 import sqlalchemy.ext.declarative as _declarative
 import sqlalchemy as _sql
-import datetime
+import datetime as _datetime
 
 Base = _declarative.declarative_base()
 
@@ -13,4 +13,4 @@ class User(Base):
     referral_code = _sql.Column(_sql.String, nullable=True)
     referral_points = _sql.Column(_sql.Integer, default=0)
     referral_id = _sql.Column(_sql.String, unique=True, index=True)
-    time = _sql.Column(_sql.TIMESTAMP, default = datetime.datetime.now())
+    time = _sql.Column(_sql.TIMESTAMP, default = _datetime.datetime.now())

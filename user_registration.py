@@ -1,21 +1,21 @@
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-from fastapi import HTTPException
+from sqlalchemy.orm import _orm
+from sqlalchemy import _sql
+import fastapi as _fastapi
 import passlib.context as _passlib
 
 from models.user import User
 import config
 
-import datetime
-import hashlib
-import secrets
-import re
+import datetime as _datetime
+import hashlib as _hashlib
+import secrets as _secrets
+import re as _regex
 
 import tests.tests_responses
 
 
-engine = create_engine(config.DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = _sql.create_engine(config.DATABASE_URL)
+SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 pwd_context = _passlib.CryptContext(schemes=["bcrypt"])
 def get_pass_hash(password):
@@ -23,19 +23,22 @@ def get_pass_hash(password):
 
 def check_email(email : str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if re.fullmatch(regex, email):
+    if _regex.fullmatch(regex, email):
         return True
     else: 
-        raise HTTPException(status_code=400, detail="Invalid email address")
+        raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
 
 def check_details(name, email, password):
-    if not name : raise HTTPException(status_code=400, detail="Invalid email address")
+    # name validation
+    if not name : raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
     
+    # password validation 
     reg_pwd = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$"
-    if not re.match(reg_pwd, password): raise HTTPException(status_code=400, detail="Invalid Password")
-
+    if not _regex.match(reg_pwd, password): raise _fastapi.HTTPException(status_code=400, detail="Invalid Password")
+    
+    # email validation
     reg_email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if not  re.fullmatch(reg_email, email): raise HTTPException(status_code=400, detail="Invalid email address")
+    if not  _regex.fullmatch(reg_email, email): raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
 
 
 def signup(name : str, email : str, password : str, referral_code : str):
@@ -44,7 +47,7 @@ def signup(name : str, email : str, password : str, referral_code : str):
     try:
         user = db.query(User).filter(User.email == email).first()
         if user:
-            raise HTTPException(status_code=422, detail="Email is already registered with us.")
+            raise _fastapi.HTTPException(status_code=422, detail="Email is already registered with us.")
         # Create a new user 
         new_user = User(
             id = set_uid(),
@@ -52,18 +55,18 @@ def signup(name : str, email : str, password : str, referral_code : str):
             email=email,
             password=get_pass_hash(password),
             referral_code=referral_code,
-            referral_id=secrets.token_urlsafe(6), #generating referal ID for new user
+            referral_id=_secrets.token_urlsafe(6), # referal ID for new user
         )
 
         check_details(name, email, password)
         db.add(new_user)
         db.commit()
 
-        # Award referral points if a valid referral code is provided
+        # refral points rewards
         if referral_code:
             referrer = db.query(User).filter_by(referral_id=referral_code).first()
             if referrer:
-                referrer.referral_points += 100  # Adjust points as needed
+                referrer.referral_points += config.REFER_REWARD
                 db.commit()
 
         return {"user_id": new_user.id, "response": "success"}
@@ -74,9 +77,8 @@ def signup(name : str, email : str, password : str, referral_code : str):
         db.close()
     
 def set_uid():
-
-    id = f"{datetime.datetime.now()}" # getting time stamp
-    return hashlib.sha1(id.encode()).hexdigest()
+    id = f"{_datetime.datetime.now()}" # getting time stamp
+    return _hashlib.sha1(id.encode()).hexdigest()
 
 
 

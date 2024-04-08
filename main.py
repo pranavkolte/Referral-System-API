@@ -1,24 +1,16 @@
-from fastapi import FastAPI, Form
 import fastapi.security as _security
 import fastapi as _fastapi
 import passlib.context as _passlib
 import pydantic as _pydantic
-import json as _json
 import datetime as _datetime
-import jwt
+import jwt as _jwt
 
-
-
-from models.user import User
-import models.user
 import user_registration
 import user_details
 import refers
-import models 
 import config
 
-
-app = FastAPI()
+app = _fastapi.FastAPI()
 
 oauth2_scheme = _security.OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = _passlib.CryptContext(schemes=["bcrypt"])
@@ -31,23 +23,26 @@ class User(_pydantic.BaseModel):
 def get_pass_hash(password):
     return pwd_context.hash(password)
 
+
 @app.get("/")
 def home(token : str = _fastapi.Depends(oauth2_scheme)):
     if check_valid_token(token=token):
         return  {"response": "authorised"}
     else:
         return {"response":"unauthorised"}
-    
+
+
 def check_valid_token(token):
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=config.ALGORITHM)
+        payload = _jwt.decode(token, config.SECRET_KEY, algorithms=config.ALGORITHM)
         expiration_time = _datetime.datetime.utcfromtimestamp(payload["exp"])
         return expiration_time > _datetime.datetime.utcnow()
-    except jwt.ExpiredSignatureError:
+    except _jwt.ExpiredSignatureError:
         return False
-    except jwt.InvalidTokenError:
+    except _jwt.InvalidTokenError:
         return False
-    
+
+
 def user_auth(email: str, password : str): 
     user = user_details.get_user(email)
     if not user:
@@ -62,7 +57,7 @@ def create_access_token(data : dict, expires_delta : _datetime.timedelta):
     expire = _datetime.datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
     print(to_encode)
-    encoded_JWT = jwt.encode(to_encode, config.SECRET_KEY , config.ALGORITHM)
+    encoded_JWT = _jwt.encode(to_encode, config.SECRET_KEY , config.ALGORITHM)
     return encoded_JWT
 
 
@@ -84,10 +79,10 @@ def login(form_data : _security.OAuth2PasswordRequestForm = _fastapi.Depends()):
 
 @app.post("/register/", response_model=dict)
 async def register_user(
-    name: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    referral_code: str = Form(None),
+    name: str = _fastapi.Form(...),
+    email: str = _fastapi.Form(...),
+    password: str = _fastapi.Form(...),
+    referral_code: str = _fastapi.Form(None),
 ):
     return user_registration.signup(name = name, email= email, password= password, referral_code=referral_code )
 
@@ -101,6 +96,5 @@ async def get_refers(email: str):
 
 
 if __name__ == "__main__":
-    # user_auth("admin@gmail.com", "Admin1234")
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

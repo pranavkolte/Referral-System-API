@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
+import json as _json
+
 import config
-import json
 
 def get_user_info(email : str):
     database = config.get_database()
@@ -50,7 +50,7 @@ def convert(result):
                 time = str(val)
         count +=1 
         new_dict[count] = {"id": id, "email": email, "name": name, "time" : time}
-    return json.dumps(new_dict)
+    return _json.dumps(new_dict)
 
 
 if __name__ == "__main__":
