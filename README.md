@@ -2,7 +2,12 @@
 
 The Referral System API is designed to streamline the process of user registration, referral tracking, and reward allocation. Built with FastAPI, it offers high performance, ease of use, and automatic documentation generation.
 
+<<<<<<< HEAD
 ## Why Choose FastAPI over Django for this scenario?
+=======
+## Unique ID: generated a UID based on the current timestamp and then converted it to a hash.
+Referal code : generated unique refral code utilzing secrets lib.
+>>>>>>> 02b9f2870af52c25b5da30f6076210651f379908
 
 FastAPI stands out for its exceptional speed and efficiency. Its architecture is designed to be intuitive and lightweight, which contributes to its high efficiency and scalable APIs. One of FastAPI’s most notable advantages is its automatic documentation feature, which offers concise guidance, **aligning perfectly with our project’s expectations as outlined in the documentation.**
 
@@ -21,8 +26,6 @@ Within our user database, we maintain two seprate columns:
 2. The provided referral code is stored in the `referral_code` column.
 3. The system matches this code with existing `referral_id` values.
 4. If a match is found, the referring user receives reward points.
-
-
 
 ## Snapshots of Endpoints
 
