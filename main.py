@@ -12,7 +12,7 @@ import config
 
 app = _fastapi.FastAPI()
 
-oauth2_scheme = _security.OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = _security.OAuth2PasswordBearer(tokenUrl=config.TOKEN_URL)
 pwd_context = _passlib.CryptContext(schemes=["bcrypt"])
 
 
@@ -65,7 +65,7 @@ def login(form_data : _security.OAuth2PasswordRequestForm = _fastapi.Depends()):
 
     if user_auth(email, password):
         access_token = create_access_token(
-            data = {"sub":email}, expires_delta = _datetime.timedelta(minutes=15)
+            data = {"sub":email}, expires_delta = _datetime.timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token" : access_token, "token_type": "bearer"}
     else:
