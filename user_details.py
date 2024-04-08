@@ -1,19 +1,23 @@
 from fastapi import FastAPI, HTTPException
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import sqlalchemy as _sql
+import sqlalchemy.orm as _orm
 
 import config
 from models.user import User
 
+import passlib.context as _passlib
+
 import config
 from models.user import User
-
+import models.user as _model
 app = FastAPI()
 
-engine = create_engine(config.DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = _sql.create_engine(config.DATABASE_URL)
+SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_user(email: str):
+pwd_context = _passlib.CryptContext(schemes=["bcrypt"])
+
+def get_user_details(email: str):
     db = SessionLocal()
     user = db.query(User).filter(User.email == email).first()
     if not user:
@@ -26,3 +30,14 @@ def get_user(email: str):
         "referral_id" : user.referral_id,
         "time" : user.time,
     }
+
+def get_user( email: str):
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="USer not found")
+    
+    return user
+
+if __name__ == "__main__":
+    get_user("admin@gmail.com", "Admin1234")

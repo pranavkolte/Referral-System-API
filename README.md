@@ -4,10 +4,10 @@ Why FastAPi: FastAPI outperformed Django in terms of speed, and its description 
 
 Unique ID: generated a UID based on the current timestamp and then converted it to a hash.
 Referal code : generated unique refral code utilzing secrets lib.
+
 1. User Registration Endpoint:
 server response
 ![alt text](image.png)
-![alt text](image-1.png)
 refral id incrementing
 ![alt text](image-4.png)
 
