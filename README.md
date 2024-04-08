@@ -13,6 +13,8 @@ refral id incrementing
 
 2. User Details Endpoint:
 ![alt text](image-3.png)
+auth header
+![alt text](image-1.png)
 
 3. Referrals Endpoint:
 ![alt text](image-2.png)

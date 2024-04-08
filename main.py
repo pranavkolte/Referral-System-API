@@ -34,9 +34,9 @@ def get_pass_hash(password):
 @app.get("/")
 def home(token : str = _fastapi.Depends(oauth2_scheme)):
     if check_valid_token(token=token):
-        return  {"response": "valid"}
+        return  {"response": "authorised"}
     else:
-        return {"response":"valid"}
+        return {"response":"unauthorised"}
     
 def check_valid_token(token):
     try:
