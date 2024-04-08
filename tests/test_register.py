@@ -24,7 +24,7 @@ class TestUserRegistration(unittest.TestCase):
         }
         response = self.client.post("/register/", data=valid_data)
         self.assertEqual(response.status_code, 200, f"Expected 200, but got {response.status_code}")
-        self.assertEqual(response.json(), {"UID": get_UID(), "response": "Success"})
+        self.assertEqual(valid_data, response)
 
     def test_register_user_no_referral(self):
         # Test registration without referral code
