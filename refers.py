@@ -21,6 +21,13 @@ def get_refer_info(email:str):
     clauses = [_user.User.referral_code == referral_id]
     res = Session().query(_user.User).filter(_sql.or_(*clauses))
     # .from_statement(_sql.text(f"SELECT id, email, name, time FROM user WHERE referral_code={referral_id};")).all()
+    response = {}
+    idx =0
+    for ref_user  in res.all():
+        idx += 1
+        response[idx] = {'id':ref_user.id, 'email':ref_user.email, 'name':ref_user.name, 'time':ref_user.time}
+    
+    return response
 
 if __name__ == "__main__":
     print(get_refer_info("nitesh342@gmail.com"))
