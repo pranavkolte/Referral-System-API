@@ -1,10 +1,5 @@
 # Referral-System-API
 
-
-## Why Choose FastAPI over Django for this scenario?
-FastAPI stands out for its exceptional speed and efficiency. Its architecture is designed to be intuitive and lightweight, which contributes to its high efficiency and scalable APIs. One of FastAPI’s most notable advantages is its automatic documentation feature, which offers concise guidance, **aligning perfectly with our project’s expectations as outlined in the documentation.**
-
-
 ### Referral Code Generation
 Using current timestamps, we generate unique user IDs and secure them with hash transformations, ensuring the integrity and uniqueness of each identifier.
 
