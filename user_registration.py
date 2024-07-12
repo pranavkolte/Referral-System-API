@@ -5,13 +5,11 @@ import passlib.context as _passlib
 
 from models.user import User
 import config
-
 import datetime as _datetime
 import hashlib as _hashlib
 import secrets as _secrets
 import re as _regex
 
-import tests.tests_responses
 
 
 engine = _sql.create_engine(config.DATABASE_URL)
