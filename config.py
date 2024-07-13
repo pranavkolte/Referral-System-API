@@ -1,4 +1,3 @@
-import hashlib
 
 HOST= "172.24.0.2" # IP of Docker container
 USER = "root"
@@ -14,6 +13,3 @@ TOKEN_URL = "token"
 REFER_REWARD = 100
 
 
-def getSHA(password):
-    SHA_password = hashlib.sha256(password.encode('utf-8')).hexdigest().upper()
-    return SHA_password

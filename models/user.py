@@ -6,7 +6,7 @@ Base = _declarative.declarative_base()
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__: str = "user"
     id = _sql.Column(_sql.String, primary_key=True, index=True)
     name = _sql.Column(_sql.String, index=True)
     email = _sql.Column(_sql.String, unique=True, index=True)

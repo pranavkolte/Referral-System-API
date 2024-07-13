@@ -22,7 +22,7 @@ def get_pass_hash(password: str) -> str:
 
 @app.get("/")
 def home(user_token: str = _fastapi.Depends(oauth2_scheme)) -> dict:
-    return token.check_valid_token(token=user_token)
+    return token.is_valid(token=user_token)
 
 
 def user_auth(email: str, password: str):
@@ -40,7 +40,7 @@ def login(form_data: _security.OAuth2PasswordRequestForm = _fastapi.Depends()):
     password = form_data.password
 
     if user_auth(email, password):
-        access_token = token.access_token(
+        access_token = token.create_access_token(
             payload={"sub": email},
             expires_delta=_datetime.timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
@@ -55,7 +55,7 @@ async def register_user(
         email: str = _fastapi.Form(...),
         password: str = _fastapi.Form(...),
         referral_code: str = _fastapi.Form(None),
-):
+) -> dict:
     return user_registration.signup(name=name, email=email, password=password, referral_code=referral_code)
 
 

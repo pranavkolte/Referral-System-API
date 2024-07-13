@@ -10,7 +10,7 @@ def create_access_token(payload: dict, expires_delta: _datetime.timedelta) -> st
     return _jwt.encode(payload=payload, key=config.SECRET_KEY, algorithm=config.ALGORITHM)
 
 
-def check_valid_token(token: str) -> dict:
+def is_valid(token: str) -> dict:
     try:
         payload: dict = _jwt.decode(token, config.SECRET_KEY, algorithms=config.ALGORITHM)
         expiration_time = _datetime.datetime.utcfromtimestamp(payload["exp"])
@@ -32,6 +32,6 @@ if __name__ == '__main__':
     # print(access_token)
 
     # -------VALIDATE TOKEN------
-    print(check_valid_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    print(is_valid("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
                             ".eyJzdWIiOiJhYmNAZ21haWwuY29tIiwiZXhwIjoxNzIwODA1NDAyfQ"
                             ".ditAfbEMQlcT9lyfWkFl8ZoeOTWbYwO354FyCgEZRGc"))
