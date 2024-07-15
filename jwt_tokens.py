@@ -7,19 +7,37 @@ import config
 def create_access_token(payload: dict, expires_delta: _datetime.timedelta) -> str:
     expire: datetime.datetime = _datetime.datetime.utcnow() + expires_delta
     payload.update({"exp": expire})
-    return _jwt.encode(payload=payload, key=config.SECRET_KEY, algorithm=config.ALGORITHM)
+    return _jwt.encode(payload=payload,
+                       key=config.SECRET_KEY,
+                       algorithm=config.ALGORITHM)
 
 
 def is_valid(token: str) -> dict:
     try:
-        payload: dict = _jwt.decode(token, config.SECRET_KEY, algorithms=config.ALGORITHM)
+        payload: dict = _jwt.decode(jwt=token,
+                                    key=config.SECRET_KEY,
+                                    algorithms=[config.ALGORITHM])
+
         expiration_time = _datetime.datetime.utcfromtimestamp(payload["exp"])
-        if expiration_time > _datetime.datetime.utcnow():
-            return {'status': 'authorised'}
+
+        if not expiration_time > _datetime.datetime.utcnow():
+            return {
+                'status': 'EXPIRED_TOKEN'
+            }
+
+        return {
+            'status': 'authorised'
+        }
+
     except _jwt.ExpiredSignatureError:
-        return {'status': 'EXPIRED_TOKEN'}
+        return {
+            'status': 'EXPIRED_TOKEN'
+        }
+
     except _jwt.InvalidTokenError:
-        return {'status': 'INVALID_TOKEN'}
+        return {
+            'status': 'INVALID_TOKEN'
+        }
 
 
 if __name__ == '__main__':
