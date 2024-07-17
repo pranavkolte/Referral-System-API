@@ -5,44 +5,45 @@ import passlib.context as _passlib
 
 from models.user import User
 import config
-
 import datetime as _datetime
 import hashlib as _hashlib
 import secrets as _secrets
 import re as _regex
 
-import tests.tests_responses
-
-
 engine = _sql.create_engine(config.DATABASE_URL)
 SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 pwd_context = _passlib.CryptContext(schemes=["bcrypt"])
+
+
 def get_pass_hash(password):
     return pwd_context.hash(password)
 
-def check_email(email : str):
+
+def check_email(email: str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     if _regex.fullmatch(regex, email):
         return True
-    else: 
+    else:
         raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
+
 
 def check_details(name, email, password):
     # name validation
-    if not name : raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
-    
+    if not name:
+        raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
+
     # password validation 
     reg_pwd = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$"
     if not _regex.match(reg_pwd, password): raise _fastapi.HTTPException(status_code=400, detail="Invalid Password")
-    
+
     # email validation
     reg_email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if not  _regex.fullmatch(reg_email, email): raise _fastapi.HTTPException(status_code=400, detail="Invalid email address")
+    if not _regex.fullmatch(reg_email, email): raise _fastapi.HTTPException(status_code=400,
+                                                                            detail="Invalid email address")
 
 
-def signup(name : str, email : str, password : str, referral_code : str):
-    
+def signup(name: str, email: str, password: str, referral_code: str):
     db = SessionLocal()
     try:
         user = db.query(User).filter(User.email == email).first()
@@ -50,12 +51,12 @@ def signup(name : str, email : str, password : str, referral_code : str):
             raise _fastapi.HTTPException(status_code=422, detail="Email is already registered with us.")
         # Create a new user 
         new_user = User(
-            id = set_uid(),
+            id=set_uid(email=email),
             name=name,
             email=email,
-            password=get_pass_hash(password),
+            password=_hashlib.sha256(password.encode('utf-8')).hexdigest().upper(),
             referral_code=referral_code,
-            referral_id=_secrets.token_urlsafe(6), # referal ID for new user
+            referral_id=_secrets.token_urlsafe(6),  # referal ID for new user
         )
 
         check_details(name, email, password)
@@ -75,11 +76,11 @@ def signup(name : str, email : str, password : str, referral_code : str):
         return {"error": str(e)}
     finally:
         db.close()
-    
-def set_uid():
-    id = f"{_datetime.datetime.now()}" # getting time stamp
-    return _hashlib.sha1(id.encode()).hexdigest()
 
+
+def set_uid(email: str):
+    uid = f"{_datetime.datetime.now()}+{email}"  # getting time stamp
+    return _hashlib.sha1(uid.encode()).hexdigest()
 
 
 if __name__ == "__main__":

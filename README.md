@@ -16,29 +16,4 @@ Within our user database, we maintain two seprate columns:
 3. The system matches this code with existing `referral_id` values.
 4. If a match is found, the referring user receives reward points.
 
-# Snapshots of Endpoints
 
-## User Registration Endpoint:
-server response
-![alt text](image.png)
-refral id incrementing
-![alt text](image-4.png)
-
-## user Details Endpoint:
-![alt text](image-3.png)
-![alt text](image-7.png)
-
-**auth header token**
-![alt text](image-5.png)
-![alt text](image-6.png)
-![alt text](image-9.png)
-![alt text](image-10.png)
-![alt text](image-10.png)
-
-## Referrals Endpoint:
-![alt text](image-2.png)
-![alt text](image-8.png)
-
-
-## docker engine
-![alt text](image-11.png)
