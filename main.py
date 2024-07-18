@@ -1,5 +1,6 @@
 import datetime as _datetime
 import hashlib as _hashlib
+import typing as _typing
 
 import fastapi as _fastapi
 import fastapi.security as _security
@@ -22,7 +23,7 @@ def home(user_token: str = _fastapi.Depends(oauth2_scheme)) -> dict:
 
 
 def user_auth(email: str, password: str) -> bool:
-    user: models.user.User | None = user_details.get_user(email=email)
+    user: _typing.Optional[models.user.User] = user_details.get_user(email=email)
     user_password: str = _hashlib.sha256(password.encode("utf-8")).hexdigest().upper()
     if not user:
         return False

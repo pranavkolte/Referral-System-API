@@ -1,11 +1,13 @@
-import sqlalchemy.ext.declarative as _declarative
-import sqlalchemy as _sql
 import datetime as _datetime
+
+import sqlalchemy as _sql
+import sqlalchemy.ext.declarative as _declarative
 
 Base = _declarative.declarative_base()
 
 
-class User(Base):
+# TODO fix Base datatyep
+class User(Base):  # type: ignore
     __tablename__: str = "user"
     id = _sql.Column(_sql.String, primary_key=True, index=True)
     name = _sql.Column(_sql.String, index=True)
