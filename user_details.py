@@ -1,14 +1,16 @@
+from os import getenv
+
 import fastapi as _fastapi
 import sqlalchemy as _sql
 import sqlalchemy.orm as _orm
 import sqlalchemy.orm.session
+from dotenv import load_dotenv
 
-import config
 from models.user import User
 
 app = _fastapi.FastAPI()
-
-engine = _sql.create_engine(config.DATABASE_URL)
+load_dotenv()
+engine = _sql.create_engine(getenv("DATABASE_URL"))
 SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
