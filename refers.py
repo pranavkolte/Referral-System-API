@@ -14,7 +14,7 @@ engine = _sql.create_engine(getenv("DATABASE_URL"))
 Session = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_user_info(db: _orm.Session, email: str) -> str:
+def get_user_info(db: _orm.Session, email) -> str:
     """
     This Function takes email and returns User info with referral ID
     :param db: sqlalchemy.orm.Session
