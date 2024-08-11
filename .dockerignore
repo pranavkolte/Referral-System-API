@@ -1,2 +1,5 @@
-__paycache__/
+__pycache__/
 tests/
+.venv
+.idea\
+.env
