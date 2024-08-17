@@ -9,29 +9,28 @@ import config
 def create_access_token(payload: dict, expires_delta: _datetime.timedelta) -> str:
     expire: datetime.datetime = _datetime.datetime.utcnow() + expires_delta
     payload.update({"exp": expire})
-    return _jwt.encode(
-        payload=payload, key=config.SECRET_KEY, algorithm=config.ALGORITHM
-    )
+    return __encode(payload=payload, key=config.SECRET_KEY, algorithm=config.ALGORITHM)
 
 
 def is_valid(token: str) -> dict:
     try:
-        payload: dict = _jwt.decode(
-            jwt=token, key=config.SECRET_KEY, algorithms=[config.ALGORITHM]
-        )
-
-        expiration_time = _datetime.datetime.utcfromtimestamp(payload["exp"])
-
-        if not expiration_time > _datetime.datetime.utcnow():
-            return {"status": "EXPIRED_TOKEN"}
-
-        return {"status": "authorised"}
-
+        __decode(token=token, key=config.SECRET_KEY, algorithm=config.ALGORITHM)
+        return {"status": "OK"}
     except _jwt.ExpiredSignatureError:
         return {"status": "EXPIRED_TOKEN"}
 
     except _jwt.InvalidTokenError:
         return {"status": "INVALID_TOKEN"}
+
+
+def __encode(payload: dict, key: str, algorithm: str) -> str:
+    return _jwt.encode(
+        payload=payload, key=config.SECRET_KEY, algorithm=config.ALGORITHM
+    )
+
+
+def __decode(token: str, key: str, algorithm: str) -> dict:
+    return _jwt.decode(jwt=token, key=key, algorithms=[algorithm])
 
 
 if __name__ == "__main__":

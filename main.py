@@ -1,13 +1,10 @@
 import datetime as _datetime
-import hashlib as _hashlib
-import typing as _typing
 
 import fastapi as _fastapi
 import fastapi.security as _security
 
 import config
 import jwt_tokens
-import models.user
 import refers
 import user_details
 import user_registration
@@ -21,18 +18,6 @@ oauth2_scheme = _security.OAuth2PasswordBearer(tokenUrl=config.TOKEN_URL)
 @app.get("/")
 def home(user_token: str = _fastapi.Depends(oauth2_scheme)) -> dict:
     return jwt_tokens.is_valid(token=user_token)
-
-
-def user_auth(email: str, password: str) -> bool:
-    user: _typing.Optional[models.user.User] = user_details.get_user(email=email)
-    user_password: str = _hashlib.sha256(password.encode("utf-8")).hexdigest().upper()
-    if not user:
-        return False
-
-    if not user_password == user.password:
-        return False
-
-    return True
 
 
 @app.post(path="/token")
