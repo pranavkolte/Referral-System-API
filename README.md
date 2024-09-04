@@ -1,8 +1,5 @@
 # Referral-System-API
 
-### Referral Code Generation
-Using current timestamps, we generate unique user IDs and secure them with hash transformations, ensuring the integrity and uniqueness of each identifier.
-
 
 ### Referral Reward 
 Within our user database, we maintain two seprate columns:
